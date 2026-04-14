@@ -64,14 +64,19 @@ app.post("/signin", async (req,res) => {
     })
 })
 
-app.post("/todo", authmiddleware, (req,res) => {
+app.post("/todo", authmiddleware, async (req,res) => {
     const userId = req.userId; 
     const title = req.body.title; 
     const description = req.body.description; 
 
     //todomodel.create 
-    TODOS.push({
-        id: CURRENT_TODO_ID++, 
+    // TODOS.push({
+    //     id: CURRENT_TODO_ID++, 
+    //     title: title, 
+    //     description: description, 
+    //     userId: userId
+    // })
+    const newTodo = await todoModel.create({
         title: title, 
         description: description, 
         userId: userId
@@ -81,19 +86,24 @@ app.post("/todo", authmiddleware, (req,res) => {
     })
 })
 
-app.get("/todos", authmiddleware, (req, res) => {
+app.get("/todos", authmiddleware, async (req, res) => {
     const userId = req.userId; 
-    const userTodos = TODOS.filter(t => t.userId === userId); 
+    const userTodos = await todoModel.find({
+        userId: userId
+    }); //TODOS.filter(t => t.userId === userId); 
     res.json({
         todos: userTodos
     })
 })
 
-app.delete("/todo/:todoId", authmiddleware, (req, res) => {
+app.delete("/todo/:todoId", authmiddleware, async (req, res) => {
     const userId = req.userId; 
-    const todoId = parseInt(req.params.todoId); 
-
-    TODOS = TODOS.filter(t => t.userId === userId && t.id === todoId); 
+    // const todoId = parseInt(req.params.todoId); 
+    const todoId = req.params.todoId; 
+    await todoModel.deleteOne({
+        _id: todoId, 
+        userId: userId
+    });  //TODOS.filter(t => t.userId === userId && t.id === todoId); 
     res.json({
         message: "todo deleted"
     })

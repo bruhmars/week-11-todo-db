@@ -1,6 +1,6 @@
 const mongoose = require("mongoose"); 
 
-mongoose.connect(""); 
+mongoose.connect("mongodb+srv://duckymars69_db_user:WK3UiDgv786ATpxp@trelloff.funo5es.mongodb.net/todo"); 
 
 //mongoose schema and model obj 
 
